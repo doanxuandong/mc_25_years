@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: 'Portraits';
+    src: url('/fonts/Portraits.otf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  .font-portraits {
+    font-family: 'Portraits', cursive;
+  }
