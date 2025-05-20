@@ -1,5 +1,4 @@
 import BlurText from "./BlurText";
-import SplashCursor from './SplashCursor';
 import StarBorder from './StarBorder';
 import mcImg from '../img/3.png';
 import ClickSpark from "./ClickSpark";
@@ -18,7 +17,7 @@ const scrollToSongList = () => {
 
 export default function HeroSection() {
   return (
-    <div className="font_po relative bg-gradient-to-br from-[#224099] via-[#224099] to-[#224099] text-white py-10 px-4 flex flex-col items-start justify-center min-h-[320px] md:min-h-[400px] overflow-hidden">
+    <div className="font_po relative bg-gradient-to-br from-[#142457] via-[#142457] to-[#142457] text-white py-10 px-4 flex flex-col items-start justify-center min-h-[320px] md:min-h-[400px] overflow-hidden">
       <TopBarMenu />
       <img
         src={mcImg}
@@ -33,8 +32,8 @@ export default function HeroSection() {
       />
       <div className="relative z-10 max-w-xl ml-auto mr-20 hidden md:block">
         <h1 className="text-3xl md:text-5xl font-bold mb-6 leading-tight">
-          <span className="text-7xl bg-gradient-to-r font-sans from-[#ffe066] via-[#ffd700] to-[#f9b233] bg-clip-text text-transparent drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">
-            Thanh âm  <span className="text-[85px] ">25</span>
+          <span className="text-7xl bg-gradient-to-r from-[#ffe066] via-[#ffd700] to-[#f9b233] bg-clip-text text-transparent animate-gradient-x">
+            Thanh âm <span className="text-[100px]">25</span>
           </span>
           <BlurText
             text ="Bình chọn ca khúc"
@@ -64,6 +63,14 @@ export default function HeroSection() {
         </StarBorder>
       </div>
       <style jsx>{`
+        @keyframes gradient-x {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        .animate-gradient-x {
+          background-size: 200% 200%;
+          animation: gradient-x 3s ease-in-out infinite;
+        }
         .press-effect:active {
           transform: scale(0.96);
           box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);

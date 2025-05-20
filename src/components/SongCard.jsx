@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function SongCard({ song, onCardClick }) {
+export default function SongCard({ song, onCardClick, showRemove, onRemove, hideVoteButton }) {
   const [voted, setVoted] = useState(false);
 
   return (
@@ -18,22 +18,35 @@ export default function SongCard({ song, onCardClick }) {
         <div className="text-gray-500 text-sm">{song.artist}</div>
         <div className="text-gray-400 text-xs mt-1">{song.votes.toLocaleString()} votes</div>
       </div>
-      <button
-        onClick={e => {
-          e.stopPropagation();
-          setVoted(v => !v);
-        }}
-        className={`ml-4 flex items-center justify-center font-bold px-4 py-2 rounded-lg shadow transition-colors duration-200 min-w-[72px]
-          ${voted ? "bg-green-400 text-white" : "bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:from-blue-600 hover:to-blue-800"}`}
-      >
-        {voted ? (
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
-        ) : (
-          "VOTE"
-        )}
-      </button>
+      {!hideVoteButton && (
+        <button
+          onClick={e => {
+            e.stopPropagation();
+            setVoted(v => !v);
+          }}
+          className={`ml-4 flex items-center justify-center font-bold px-4 py-2 rounded-lg shadow transition-colors duration-200 min-w-[72px]
+            ${voted ? "bg-green-400 text-white" : "bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:from-blue-600 hover:to-blue-800"}`}
+        >
+          {voted ? (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          ) : (
+            "VOTE"
+          )}
+        </button>
+      )}
+      {showRemove && (
+        <button
+          onClick={e => {
+            e.stopPropagation();
+            onRemove?.();
+          }}
+          className="ml-2 flex items-center justify-center font-bold px-3 py-2 rounded-lg shadow bg-red-500 hover:bg-red-600 text-white"
+        >
+          Xóa
+        </button>
+      )}
     </div>
   );
 } 

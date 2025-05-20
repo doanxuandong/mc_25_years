@@ -1,7 +1,67 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import LoginModal from "./LoginModal";
+import SavedVotesModal from "./SavedVotesModal";
+import Top10SongsModal from "./Top10SongsModal";
+import tomImg from "../img/tom.jpg";
+// Dữ liệu mẫu cho các bài hát đã vote và top 10
+const mockVotedSongs = [
+  {
+    id: 1,
+    title: "Đi về nhà",
+    artist: "Doan Xuan Dong",
+    img: tomImg,
+    votes: 8303,
+  },
+  {
+    id: 2,
+    title: "Bài hát 2",
+    artist: "Tác giả 2",
+    img: tomImg,
+    votes: 5000,
+  },
+  // ... có thể thêm tối đa 5 bài
+];
+
+const mockTop10Songs = [
+  { id: 1, title: "Seven", artist: "Jung Kook ft. Latto", votes: 12000 },
+  { id: 2, title: "LaLa", artist: "Myke Towers", votes: 11000 },
+  { id: 3, title: "Dance The Night", artist: "Dua Lipa", votes: 10500 },
+  { id: 4, title: "What Was I Made For?", artist: "Billie Eilish", votes: 10000 },
+  { id: 5, title: "Cruel Summer", artist: "Taylor Swift", votes: 9500 },
+  { id: 6, title: "Super Shy", artist: "NewJeans", votes: 9000 },
+  { id: 7, title: "Paint The Town Red", artist: "Doja Cat", votes: 8500 },
+  { id: 8, title: "Columbia", artist: "Quevedo", votes: 8000 },
+  { id: 9, title: "Vampire", artist: "Olivia Rodrigo", votes: 7800 },
+  { id: 10, title: "Sprinter", artist: "Dave & Central Cee", votes: 7500 },
+];
 
 export default function TopBarMenu() {
   const [open, setOpen] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showSaved, setShowSaved] = useState(false);
+  const [showTop10, setShowTop10] = useState(false);
+  const [votedSongs, setVotedSongs] = useState(mockVotedSongs);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    } else {
+      setUser(null);
+    }
+  }, [showLogin]); // reload khi modal login đóng/mở
+
+  const handleRemoveVote = (song) => {
+    setVotedSongs(votedSongs.filter(s => s.id !== song.id));
+    // TODO: Hủy vote thực tế ở đây nếu dùng backend/Firebase
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    window.location.reload();
+  };
 
   return (
     <div>
@@ -19,22 +79,47 @@ export default function TopBarMenu() {
       {/* Dropdown menu */}
       {open && (
         <div className="absolute right-4 top-16 bg-white rounded-xl shadow-lg p-4 flex flex-col gap-4 z-50 min-w-[180px]">
-          <button className="flex items-center gap-3 text-gray-700 hover:bg-gray-100 rounded-lg px-3 py-2 transition">
+          <button
+            className="flex items-center gap-3 text-gray-700 hover:bg-gray-100 rounded-lg px-3 py-2 transition"
+            onClick={() => {
+              if (!user) setShowLogin(true);
+              setOpen(false);
+            }}
+          >
             {/* Login icon */}
             <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="12" cy="8" r="4" />
               <path d="M4 20v-1c0-2.21 3.58-4 8-4s8 1.79 8 4v1" />
             </svg>
-            Đăng nhập
+            {user ? user.full_name : "Đăng nhập"}
           </button>
-          <button className="flex items-center gap-3 text-gray-700 hover:bg-gray-100 rounded-lg px-3 py-2 transition">
+          {user && (
+            <button
+              className="flex items-center gap-3 text-red-600 hover:bg-gray-100 rounded-lg px-3 py-2 transition"
+              onClick={handleLogout}
+            >
+              {/* Logout icon */}
+              <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M16 17l5-5-5-5M21 12H9" />
+                <path d="M4 4v16h8" />
+              </svg>
+              Đăng xuất
+            </button>
+          )}
+          <button
+            className="flex items-center gap-3 text-gray-700 hover:bg-gray-100 rounded-lg px-3 py-2 transition"
+            onClick={() => { setShowSaved(true); setOpen(false); }}
+          >
             {/* Bookmark icon */}
             <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M5 3v18l7-5 7 5V3z" />
             </svg>
             Đã lưu
           </button>
-          <button className="flex items-center gap-3 text-gray-700 hover:bg-gray-100 rounded-lg px-3 py-2 transition">
+          <button
+            className="flex items-center gap-3 text-gray-700 hover:bg-gray-100 rounded-lg px-3 py-2 transition"
+            onClick={() => { setShowTop10(true); setOpen(false); }}
+          >
             {/* Trophy icon */}
             <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M8 21h8M12 17v4M17 3v4a5 5 0 01-10 0V3" />
@@ -44,6 +129,18 @@ export default function TopBarMenu() {
           </button>
         </div>
       )}
+      <LoginModal open={showLogin} onClose={() => setShowLogin(false)} />
+      <SavedVotesModal
+        open={showSaved}
+        onClose={() => setShowSaved(false)}
+        votes={votedSongs}
+        onRemove={handleRemoveVote}
+      />
+      <Top10SongsModal
+        open={showTop10}
+        onClose={() => setShowTop10(false)}
+        songs={mockTop10Songs}
+      />
     </div>
   );
 } 

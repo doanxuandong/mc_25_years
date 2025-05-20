@@ -2,8 +2,15 @@
   display: inline-block;
   padding: 1px 0;
   position: relative;
-  border-radius: 20px;
+  border-radius: 18px;
   overflow: hidden;
+  box-shadow: 0 2px 16px 0 rgba(255, 215, 0, 0.18), 0 1px 4px 0 rgba(0,0,0,0.08);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.star-border-container:hover {
+  transform: scale(1.04) rotate(-1deg);
+  box-shadow: 0 4px 24px 0 #ffe066, 0 2px 8px 0 rgba(0,0,0,0.12);
 }
 
 .border-gradient-bottom {
@@ -32,14 +39,24 @@
 
 .inner-content {
   position: relative;
-  background: linear-gradient(to bottom, #060606, #111);
-  border: 1px solid #222;
-  color: white;
-  font-size: 16px;
+  background: linear-gradient(90deg, #ffe066 0%, #ffd700 50%, #f9b233 100%);
+  border: 2px solid #fffbe6;
+  color: #1a2950;
+  font-size: 1.25rem;
+  font-weight: bold;
   text-align: center;
-  padding: 16px 26px;
-  border-radius: 20px;
+  padding: 12px 28px;
+  border-radius: 18px;
   z-index: 1;
+  box-shadow: 0 0 12px 0 #ffe06699;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 4px #fffbe6, 0 1px 0 #fff;
+  transition: background 0.2s, color 0.2s;
+}
+
+.inner-content:hover {
+  background: linear-gradient(90deg, #fffbe6 0%, #ffe066 50%, #ffd700 100%);
+  color: #b8860b;
 }
 
 @keyframes star-movement-bottom {
