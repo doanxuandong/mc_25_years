@@ -4,6 +4,7 @@ import {
   CustomerServiceOutlined,
   UserOutlined,
   BarChartOutlined,
+  LineChartOutlined,
   SettingOutlined,
   FileExcelOutlined,
   LogoutOutlined,
@@ -23,7 +24,7 @@ export default function AdminSidebar({ onLogout }) {
         </div>
       </div>
       <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']} style={{ background: '#1a2950' }}>
-        <Menu.Item key="1" icon={<DashboardOutlined />} onClick={() => navigate('/admin/dashboard')}>Dashboard</Menu.Item>
+        <Menu.Item key="1" icon={<LineChartOutlined />} onClick={() => navigate('/admin/dashboard')}>Dashboard</Menu.Item>
         <Menu.Item key="2" icon={<CustomerServiceOutlined />} onClick={() => navigate('/admin/songs')}>Song Management</Menu.Item>
         <Menu.Item key="3" icon={<UserOutlined />} onClick={() => navigate('/admin/users')}>User Management</Menu.Item>
         <Menu.Item key="4" icon={<BarChartOutlined />} onClick={() => navigate('/admin/vote-statistics')}>Vote Statistics</Menu.Item>

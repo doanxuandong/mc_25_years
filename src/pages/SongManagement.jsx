@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Table, Input, Space, message, Image } from "antd";
-import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined, FilterOutlined, ReloadOutlined } from "@ant-design/icons";
 import SongFormModal from "../components/SongFormModal";
 
 export default function SongManagement() {
@@ -107,8 +107,8 @@ export default function SongManagement() {
           onChange={e => setFilters(prev => ({ ...prev, title: e.target.value }))} />
         <Input placeholder="Tìm theo tác giả..." style={{ width: 180 }} value={filters.author}
           onChange={e => setFilters(prev => ({ ...prev, author: e.target.value }))} />
-        <Button type="primary" onClick={() => fetchSongs(filters)}>Lọc</Button>
-        <Button onClick={() => { setFilters({ title: '', author: '' }); fetchSongs({ title: '', author: '' }); }}>Làm mới</Button>
+        <Button type="primary" onClick={() => fetchSongs(filters)} icon={<FilterOutlined />}>Lọc</Button>
+        <Button onClick={() => { setFilters({ title: '', author: '' }); fetchSongs({ title: '', author: '' }); }} icon={<ReloadOutlined />}>Làm mới</Button>
       </Space>
       <Table
         columns={columns}

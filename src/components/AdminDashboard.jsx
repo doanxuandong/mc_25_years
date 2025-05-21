@@ -48,7 +48,7 @@ export default function AdminDashboard() {
     fetch('http://localhost:5000/api/songs')
       .then(res => res.json())
       .then(data => {
-        setTotalSongs(data.total || (data.data ? data.data.length : 0));
+        setTotalSongs(data.data ? data.data.length : 0);
         // Tổng votes là tổng votes của tất cả bài hát
         const sumVotes = (data.data || []).reduce((acc, song) => acc + (song.votes || 0), 0);
         setTotalVotes(sumVotes);
@@ -63,6 +63,8 @@ export default function AdminDashboard() {
     fetch('http://localhost:5000/api/users')
       .then(res => res.json())
       .then(users => {
+        const loggedInUsers = users.filter(u => u.last_login);
+        setTotalUsers(loggedInUsers.length);
         const today = dayjs().format('YYYY-MM-DD');
         const filtered = users.filter(u => u.last_login && dayjs(u.last_login).format('YYYY-MM-DD') === today);
         setTodayLogins(filtered);
