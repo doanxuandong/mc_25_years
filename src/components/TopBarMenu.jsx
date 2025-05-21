@@ -40,9 +40,11 @@ export default function TopBarMenu() {
   const [showLogin, setShowLogin] = useState(false);
   const [showSaved, setShowSaved] = useState(false);
   const [showTop10, setShowTop10] = useState(false);
-  const [votedSongs, setVotedSongs] = useState(mockVotedSongs);
+  const [votedSongs, setVotedSongs] = useState([]);
   const [user, setUser] = useState(null);
+  const [showVoteLimit, setShowVoteLimit] = useState(false);
 
+  // Lấy user hiện tại
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -50,11 +52,29 @@ export default function TopBarMenu() {
     } else {
       setUser(null);
     }
-  }, [showLogin]); // reload khi modal login đóng/mở
+  }, [showLogin]);
 
-  const handleRemoveVote = (song) => {
-    setVotedSongs(votedSongs.filter(s => s.id !== song.id));
-    // TODO: Hủy vote thực tế ở đây nếu dùng backend/Firebase
+  // Lấy danh sách voted của user
+  const fetchVotes = () => {
+    if (user) {
+      fetch(`http://localhost:5000/api/votes?user_id=${user.id}`)
+        .then(res => res.json())
+        .then(data => setVotedSongs(data));
+    } else {
+      setVotedSongs([]);
+    }
+  };
+  useEffect(() => {
+    fetchVotes();
+  }, [user, showSaved]);
+
+  const handleRemoveVote = async (vote) => {
+    const res = await fetch(`http://localhost:5000/api/votes/${vote.id}`, { method: 'DELETE' });
+    if (res.ok) {
+      fetchVotes();
+    } else {
+      alert('Unvote thất bại');
+    }
   };
 
   const handleLogout = () => {
@@ -62,6 +82,20 @@ export default function TopBarMenu() {
     setUser(null);
     window.location.reload();
   };
+
+  // Hiển thị thông báo giới hạn vote
+  const VoteLimitModal = () => showVoteLimit && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-2 p-6 relative text-gray-900 text-center">
+        <button
+          onClick={() => setShowVoteLimit(false)}
+          className="absolute top-3 right-4 text-gray-400 hover:text-black text-3xl font-bold"
+        >×</button>
+        <h2 className="text-2xl font-bold mb-4">Bạn chỉ được vote tối đa 5 bài hát!</h2>
+        <div className="text-gray-600">Hãy xóa bớt bài hát đã vote nếu muốn chọn thêm.</div>
+      </div>
+    </div>
+  );
 
   return (
     <div>
@@ -141,6 +175,7 @@ export default function TopBarMenu() {
         onClose={() => setShowTop10(false)}
         songs={mockTop10Songs}
       />
+      <VoteLimitModal />
     </div>
   );
 } 

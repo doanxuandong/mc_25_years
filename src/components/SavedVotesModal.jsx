@@ -20,8 +20,12 @@ export default function SavedVotesModal({ open, onClose, votes, onRemove }) {
           <div className="flex flex-col gap-4">
             {votes.slice(0, 5).map((song, idx) => (
               <SongCard
-                key={song.id || idx}
-                song={song}
+                key={song.id || song.id_song || idx}
+                song={{
+                  ...song,
+                  votes: song.votes || 0,
+                  id_song: song.id_song || song.song_id,
+                }}
                 showRemove
                 onRemove={() => onRemove(song)}
                 hideVoteButton

@@ -1,7 +1,17 @@
 import { useState } from "react";
 
-export default function SongCard({ song, onCardClick, showRemove, onRemove, hideVoteButton }) {
-  const [voted, setVoted] = useState(false);
+export default function SongCard({ song, onCardClick, showRemove, onRemove, hideVoteButton, onRequireLogin, onVote, voted }) {
+  // const [voted, setVoted] = useState(false); // Không dùng state cục bộ nữa
+
+  const handleVote = (e) => {
+    e.stopPropagation();
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) {
+      onRequireLogin?.();
+      return;
+    }
+    onVote?.();
+  };
 
   return (
     <div
@@ -20,12 +30,10 @@ export default function SongCard({ song, onCardClick, showRemove, onRemove, hide
       </div>
       {!hideVoteButton && (
         <button
-          onClick={e => {
-            e.stopPropagation();
-            setVoted(v => !v);
-          }}
+          onClick={handleVote}
+          disabled={voted}
           className={`ml-4 flex items-center justify-center font-bold px-4 py-2 rounded-lg shadow transition-colors duration-200 min-w-[72px]
-            ${voted ? "bg-green-400 text-white" : "bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:from-blue-600 hover:to-blue-800"}`}
+            ${voted ? "bg-green-400 text-white cursor-not-allowed" : "bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:from-blue-600 hover:to-blue-800"}`}
         >
           {voted ? (
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>

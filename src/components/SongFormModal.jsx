@@ -14,16 +14,29 @@ export default function SongFormModal({ visible, onCancel, onSubmit, song }) {
     }
   }, [song, form]);
 
-  // Giả lập upload file, trả về URL local
-  const handleFakeUpload = (file, type) => {
+  // Upload file lên server thật, trả về URL
+  const handleUpload = async (file, type) => {
+    const formData = new FormData();
+    formData.append("file", file);
     setUploading(true);
-    setTimeout(() => {
-      const url = URL.createObjectURL(file);
-      form.setFieldsValue({ [type]: url });
-      message.success("Tải lên thành công!");
-      setUploading(false);
-    }, 1000);
-    return false; // Ngăn upload mặc định
+    try {
+      const res = await fetch("http://localhost:5000/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.url) {
+        // Lưu URL thực sự trả về từ server
+        form.setFieldsValue({ [type]: "http://localhost:5000" + data.url });
+        message.success("Tải lên thành công!");
+      } else {
+        message.error("Tải lên thất bại!");
+      }
+    } catch {
+      message.error("Tải lên thất bại!");
+    }
+    setUploading(false);
+    return false;
   };
 
   const handleOk = () => {
@@ -49,7 +62,7 @@ export default function SongFormModal({ visible, onCancel, onSubmit, song }) {
         <Form.Item label="Upload ảnh đại diện">
           <Upload
             showUploadList={false}
-            customRequest={({ file }) => handleFakeUpload(file, "avatar")}
+            customRequest={({ file }) => handleUpload(file, "avatar")}
             accept="image/*"
           >
             <Button icon={<UploadOutlined />} loading={uploading}>Chọn ảnh</Button>
@@ -67,7 +80,7 @@ export default function SongFormModal({ visible, onCancel, onSubmit, song }) {
         <Form.Item label="Upload file audio">
           <Upload
             showUploadList={false}
-            customRequest={({ file }) => handleFakeUpload(file, "audio")}
+            customRequest={({ file }) => handleUpload(file, "audio")}
             accept="audio/*"
           >
             <Button icon={<UploadOutlined />} loading={uploading}>Chọn file nhạc</Button>

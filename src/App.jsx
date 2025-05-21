@@ -8,12 +8,23 @@ import SongList from "./components/SongList";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import UserManagement from "./pages/UserManagement";
 import SongManagement from "./pages/SongManagement";
+import TopBarMenu from './components/TopBarMenu';
 
 export default function App() {
   const [isAdmin, setIsAdmin] = useState(() => {
     const user = JSON.parse(localStorage.getItem('user'));
     return user?.role === 'admin';
   });
+
+  // State đồng bộ vote
+  const [votedSongs, setVotedSongs] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('votedSongs')) || [];
+    } catch {
+      return [];
+    }
+  });
+  const [showVoteLimit, setShowVoteLimit] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -42,8 +53,13 @@ export default function App() {
           <Route path="/admin/users" element={<Navigate to="/" />} />
           <Route path="/" element={
             <div className="bg-gray-100 min-h-screen">
+              <TopBarMenu />
               <HeroSection />
-              <SongList />
+              <SongList
+                votedSongs={votedSongs}
+                setVotedSongs={setVotedSongs}
+                setShowVoteLimit={setShowVoteLimit}
+              />
             </div>
           } />
           <Route path="*" element={<Navigate to="/" />} />

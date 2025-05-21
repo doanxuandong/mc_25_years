@@ -1,4 +1,5 @@
 import { Card, Row, Col, Table, Button } from 'antd';
+import { useEffect, useState } from 'react';
 
 const summaryData = [
   { title: 'Total Songs', value: 12, icon: '🎵' },
@@ -27,6 +28,14 @@ const data = [
 ];
 
 export default function AdminDashboard() {
+  const [voteStats, setVoteStats] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/vote-stats')
+      .then(res => res.json())
+      .then(data => setVoteStats(data));
+  }, []);
+
   return (
     <div style={{ padding: 24 }}>
       <h1 style={{ fontWeight: 600, fontSize: 24 }}>MC GROUP Voting Dashboard</h1>
@@ -59,6 +68,17 @@ export default function AdminDashboard() {
           </Card>
         </Col>
       </Row>
+      <h2 style={{ fontWeight: 600, fontSize: 20, margin: '24px 0 12px' }}>Vote Statistics</h2>
+      <Table
+        columns={[
+          { title: 'Tên người dùng', dataIndex: 'full_name', key: 'full_name' },
+          { title: 'Số lượt vote', dataIndex: 'vote_count', key: 'vote_count' },
+        ]}
+        dataSource={voteStats}
+        pagination={false}
+        rowKey="full_name"
+        bordered
+      />
       <Table
         columns={columns}
         dataSource={data}
