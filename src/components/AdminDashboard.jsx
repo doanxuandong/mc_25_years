@@ -1,12 +1,7 @@
 import { Card, Row, Col, Table, Button } from 'antd';
 import { useEffect, useState } from 'react';
-
-const summaryData = [
-  { title: 'Total Songs', value: 12, icon: '🎵' },
-  { title: 'Total Users', value: 1045, icon: '👤' },
-  { title: 'Total Votes', value: 23456, icon: '🗳️' },
-  { title: 'Time Remaining', value: '20d 15:23:45', icon: '⏳' },
-];
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
+import dayjs from 'dayjs';
 
 const columns = [
   { title: 'ID', dataIndex: 'id' },
@@ -27,14 +22,79 @@ const data = [
   { id: 4, title: 'Open', author: 'Doé Xuan Dong', votes: '3.830', status: 'Open' },
 ];
 
+function getCountdownString(targetDate) {
+  const now = new Date();
+  const diff = targetDate - now;
+  if (diff <= 0) return '0d 00:00:00';
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+  return `${days}d ${hours.toString().padStart(2, '0')}:${minutes
+    .toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
 export default function AdminDashboard() {
-  const [voteStats, setVoteStats] = useState([]);
+  const [totalSongs, setTotalSongs] = useState(0);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalVotes, setTotalVotes] = useState(0);
+  const [countdown, setCountdown] = useState('');
+  const [top5Songs, setTop5Songs] = useState([]);
+  const [votesPerDay, setVotesPerDay] = useState([]);
+  const [todayLogins, setTodayLogins] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/vote-stats')
+    // Fetch total songs and total votes
+    fetch('http://localhost:5000/api/songs')
       .then(res => res.json())
-      .then(data => setVoteStats(data));
+      .then(data => {
+        setTotalSongs(data.total || (data.data ? data.data.length : 0));
+        // Tổng votes là tổng votes của tất cả bài hát
+        const sumVotes = (data.data || []).reduce((acc, song) => acc + (song.votes || 0), 0);
+        setTotalVotes(sumVotes);
+        // Top 5 songs by votes
+        const top5 = [...(data.data || [])]
+          .sort((a, b) => (b.votes || 0) - (a.votes || 0))
+          .slice(0, 5)
+          .map(song => ({ title: song.title, votes: song.votes || 0 }));
+        setTop5Songs(top5);
+      });
+    // Fetch total users
+    fetch('http://localhost:5000/api/users')
+      .then(res => res.json())
+      .then(users => {
+        const today = dayjs().format('YYYY-MM-DD');
+        const filtered = users.filter(u => u.last_login && dayjs(u.last_login).format('YYYY-MM-DD') === today);
+        setTodayLogins(filtered);
+      });
+    // Fetch votes per day
+    fetch('http://localhost:5000/api/votes/per-day')
+      .then(res => res.json())
+      .then(data => setVotesPerDay(data.map(row => ({ date: row.date, votes: Number(row.votes) }))));
+    // Countdown
+    const target = new Date('2025-08-07T00:00:00');
+    setCountdown(getCountdownString(target));
+    const timer = setInterval(() => {
+      setCountdown(getCountdownString(target));
+    }, 1000);
+    return () => clearInterval(timer);
   }, []);
+
+  const summaryData = [
+    { title: 'Total Songs', value: totalSongs, icon: '🎵' },
+    { title: 'Total Users', value: totalUsers, icon: '👤' },
+    { title: 'Total Votes', value: totalVotes, icon: '🗳️' },
+    { title: 'Time Remaining', value: countdown, icon: '⏳' },
+  ];
+
+  const todayLoginColumns = [
+    { title: 'ID', dataIndex: 'id' },
+    { title: 'Name', dataIndex: 'full_name' },
+    { title: 'Email', dataIndex: 'email' },
+    { title: 'Role', dataIndex: 'role_mc' },
+    { title: 'Position', dataIndex: 'position_mc' },
+    { title: 'Last Login', dataIndex: 'last_login', render: t => t ? dayjs(t).format('YYYY-MM-DD HH:mm:ss') : '' },
+  ];
 
   return (
     <div style={{ padding: 24 }}>
@@ -52,39 +112,40 @@ export default function AdminDashboard() {
       </Row>
       <Row gutter={16} style={{ marginBottom: 24 }}>
         <Col span={12}>
-          {/* Biểu đồ Top 5 Songs sẽ thêm sau */}
           <Card title="Top 5 Songs" style={{ height: 300 }}>
-            <div style={{ height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>
-              (Chart here)
-            </div>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={top5Songs} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="title" />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="votes" fill="#1976d2" name="Votes" />
+              </BarChart>
+            </ResponsiveContainer>
           </Card>
         </Col>
         <Col span={12}>
-          {/* Biểu đồ Votes Per Day sẽ thêm sau */}
           <Card title="Votes Per Day" style={{ height: 300 }}>
-            <div style={{ height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa' }}>
-              (Chart here)
-            </div>
+            <ResponsiveContainer width="100%" height={220}>
+              <BarChart data={votesPerDay} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="votes" fill="#f59e42" name="Votes" />
+              </BarChart>
+            </ResponsiveContainer>
           </Card>
         </Col>
       </Row>
-      <h2 style={{ fontWeight: 600, fontSize: 20, margin: '24px 0 12px' }}>Vote Statistics</h2>
       <Table
-        columns={[
-          { title: 'Tên người dùng', dataIndex: 'full_name', key: 'full_name' },
-          { title: 'Số lượt vote', dataIndex: 'vote_count', key: 'vote_count' },
-        ]}
-        dataSource={voteStats}
-        pagination={false}
-        rowKey="full_name"
-        bordered
-      />
-      <Table
-        columns={columns}
-        dataSource={data}
+        columns={todayLoginColumns}
+        dataSource={todayLogins}
         pagination={false}
         rowKey="id"
-        title={() => 'Songs'}
+        title={() => 'Today Login'}
       />
     </div>
   );

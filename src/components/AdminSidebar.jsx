@@ -26,7 +26,7 @@ export default function AdminSidebar({ onLogout }) {
         <Menu.Item key="1" icon={<DashboardOutlined />} onClick={() => navigate('/admin/dashboard')}>Dashboard</Menu.Item>
         <Menu.Item key="2" icon={<CustomerServiceOutlined />} onClick={() => navigate('/admin/songs')}>Song Management</Menu.Item>
         <Menu.Item key="3" icon={<UserOutlined />} onClick={() => navigate('/admin/users')}>User Management</Menu.Item>
-        <Menu.Item key="4" icon={<BarChartOutlined />}>Vote Statistics</Menu.Item>
+        <Menu.Item key="4" icon={<BarChartOutlined />} onClick={() => navigate('/admin/vote-statistics')}>Vote Statistics</Menu.Item>
         <Menu.Item key="5" icon={<SettingOutlined />}>Program Settings</Menu.Item>
         <Menu.Item key="6" icon={<FileExcelOutlined />}>Export Reports</Menu.Item>
         <Menu.Item key="7" icon={<LogoutOutlined />} onClick={onLogout}>Logout</Menu.Item>

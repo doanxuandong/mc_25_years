@@ -6,6 +6,8 @@ export default function MusicModal({ open, onClose, song, onPrev, onNext }) {
 
   if (!open || !song) return null;
 
+  console.log('SONG DATA:', song);
+
   const handlePlayPause = () => {
     if (!audioRef.current) return;
     if (playing) {
@@ -27,13 +29,30 @@ export default function MusicModal({ open, onClose, song, onPrev, onNext }) {
         </button>
         <div className="flex flex-row md:flex-row gap-4 items-center">
           <img
-            src={song.img}
+            src={
+              song.avatar
+                ? song.avatar
+                : song.img
+                  ? song.img.startsWith('http') || song.img.startsWith('/uploads')
+                    ? song.img
+                    : `/uploads/${song.img}`
+                  : song.image
+                    ? song.image.startsWith('http') || song.image.startsWith('/uploads')
+                      ? song.image
+                      : `/uploads/${song.image}`
+                    : song.image_url
+                      ? song.image_url.startsWith('http') || song.image_url.startsWith('/uploads')
+                        ? song.image_url
+                        : `/uploads/${song.image_url}`
+                      : '/default-image.jpg'
+            }
             alt={song.title}
             className="w-20 h-20 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-xl object-cover shadow-lg"
           />
           <div className="flex-1 flex flex-col justify-center">
             <div className="uppercase text-xs text-gray-400 mb-1">Bài hát</div>
             <div className="text-2xl md:text-3xl font-bold mb-2">{song.title}</div>
+            <div className="text-base text-gray-300 font-medium mt-1">{song.author}</div>
             <div className="flex items-center gap-2 text-gray-300 mb-2 flex-wrap">
               <span className="font-semibold">{song.artist}</span>
               {song.year && <>• {song.year}</>}

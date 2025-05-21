@@ -127,7 +127,7 @@ export default function SongList({ setShowVoteLimit = () => {} }) {
       <LoginModal open={showLogin} onClose={() => setShowLogin(false)} />
       {/* Modal đã vote */}
       <SavedVotesModal
-        open={false} // Bạn có thể điều khiển open/close modal này từ TopBarMenu hoặc tại đây
+        open={false} 
         onClose={() => {}}
         votes={votedSongs}
         onRemove={vote => handleUnvote(vote.id)}

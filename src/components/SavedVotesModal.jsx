@@ -23,6 +23,7 @@ export default function SavedVotesModal({ open, onClose, votes, onRemove }) {
                 key={song.id || song.id_song || idx}
                 song={{
                   ...song,
+                  img: song.img || song.image || song.image_url ? `/uploads/${song.img || song.image || song.image_url}` : '/default-image.jpg',
                   votes: song.votes || 0,
                   id_song: song.id_song || song.song_id,
                 }}

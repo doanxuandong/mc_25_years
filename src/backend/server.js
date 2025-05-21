@@ -313,3 +313,14 @@ app.get('/api/vote-stats', async (req, res) => {
   `);
   res.json(result.rows);
 });
+
+// API: Votes per day
+app.get('/api/votes/per-day', async (req, res) => {
+  const result = await pool.query(`
+    SELECT TO_CHAR(created_at, 'YYYY-MM-DD') AS date, COUNT(*) AS votes
+    FROM votes
+    GROUP BY date
+    ORDER BY date
+  `);
+  res.json(result.rows);
+});

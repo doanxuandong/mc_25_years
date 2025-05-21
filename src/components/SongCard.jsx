@@ -19,7 +19,23 @@ export default function SongCard({ song, onCardClick, showRemove, onRemove, hide
       onClick={onCardClick}
     >
       <img
-        src={song.img}
+        src={
+          song.avatar
+            ? song.avatar
+            : song.img
+              ? song.img.startsWith('http') || song.img.startsWith('/uploads')
+                ? song.img
+                : `/uploads/${song.img}`
+              : song.image
+                ? song.image.startsWith('http') || song.image.startsWith('/uploads')
+                  ? song.image
+                  : `/uploads/${song.image}`
+                : song.image_url
+                  ? song.image_url.startsWith('http') || song.image_url.startsWith('/uploads')
+                    ? song.image_url
+                    : `/uploads/${song.image_url}`
+                  : '/default-image.jpg'
+        }
         alt={song.title}
         className="w-16 h-16 rounded-lg object-cover mr-4 flex-shrink-0"
       />
