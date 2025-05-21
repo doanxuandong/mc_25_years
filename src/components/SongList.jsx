@@ -9,7 +9,9 @@ export default function SongList({ setShowVoteLimit = () => {} }) {
   const [votedSongs, setVotedSongs] = useState([]); // [{id, id_song, ...}]
   const [open, setOpen] = useState(false);
   const [currentSong, setCurrentSong] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [showLogin, setShowLogin] = useState(false);
+  const [autoNext, setAutoNext] = useState(false);
 
   // Lấy user hiện tại
   const user = JSON.parse(localStorage.getItem('user'));
@@ -46,14 +48,29 @@ export default function SongList({ setShowVoteLimit = () => {} }) {
       .then(data => setSongs(data.data || []));
   };
 
-  const handleOpenModal = (song) => {
+  const handleOpenModal = (song, idx) => {
     setCurrentSong(song);
+    setCurrentIndex(idx);
     setOpen(true);
   };
 
   const handleCloseModal = () => {
     setOpen(false);
     setCurrentSong(null);
+  };
+
+  const handlePrev = () => {
+    if (songs.length === 0) return;
+    const newIndex = (currentIndex - 1 + songs.length) % songs.length;
+    setCurrentIndex(newIndex);
+    setCurrentSong(songs[newIndex]);
+  };
+
+  const handleNext = () => {
+    if (songs.length === 0) return;
+    const newIndex = (currentIndex + 1) % songs.length;
+    setCurrentIndex(newIndex);
+    setCurrentSong(songs[newIndex]);
   };
 
   // Hàm xử lý vote
@@ -115,7 +132,7 @@ export default function SongList({ setShowVoteLimit = () => {} }) {
                 votes: song.votes || 0,
                 id_song: song.id_song,
               }}
-              onCardClick={() => handleOpenModal({ ...song })}
+              onCardClick={() => handleOpenModal({ ...song }, idx)}
               onRequireLogin={() => setShowLogin(true)}
               onVote={() => handleVote(song)}
               voted={!!votedObj}
@@ -123,7 +140,15 @@ export default function SongList({ setShowVoteLimit = () => {} }) {
           );
         })}
       </div>
-      <MusicModal open={open} onClose={handleCloseModal} song={currentSong} />
+      <MusicModal
+        open={open}
+        onClose={handleCloseModal}
+        song={currentSong}
+        onPrev={handlePrev}
+        onNext={handleNext}
+        autoNext={autoNext}
+        setAutoNext={setAutoNext}
+      />
       <LoginModal open={showLogin} onClose={() => setShowLogin(false)} />
       {/* Modal đã vote */}
       <SavedVotesModal
