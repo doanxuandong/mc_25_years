@@ -43,6 +43,7 @@ export default function TopBarMenu() {
   const [votedSongs, setVotedSongs] = useState([]);
   const [user, setUser] = useState(null);
   const [showVoteLimit, setShowVoteLimit] = useState(false);
+  const [top10Songs, setTop10Songs] = useState([]);
 
   // Lấy user hiện tại
   useEffect(() => {
@@ -96,6 +97,21 @@ export default function TopBarMenu() {
       </div>
     </div>
   );
+
+  useEffect(() => {
+    // Lấy top 10 bài hát có votes cao nhất
+    fetch('http://localhost:5000/api/songs')
+      .then(res => res.json())
+      .then(data => {
+        const sorted = (data.data || []).sort((a, b) => (b.votes || 0) - (a.votes || 0));
+        setTop10Songs(sorted.slice(0, 10).map(song => ({
+          id: song.id_song,
+          title: song.title,
+          artist: song.author,
+          votes: song.votes || 0
+        })));
+      });
+  }, []);
 
   return (
     <div>
@@ -173,7 +189,7 @@ export default function TopBarMenu() {
       <Top10SongsModal
         open={showTop10}
         onClose={() => setShowTop10(false)}
-        songs={mockTop10Songs}
+        songs={top10Songs}
       />
       <VoteLimitModal />
     </div>
