@@ -7,6 +7,7 @@ import HeroSection from "./components/HeroSection";
 import SongList from "./components/SongList";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import UserManagement from "./pages/UserManagement";
+import SongManagement from "./pages/SongManagement";
 
 export default function App() {
   const [isAdmin, setIsAdmin] = useState(() => {
@@ -30,6 +31,7 @@ export default function App() {
               <Routes>
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
                 <Route path="/admin/users" element={<UserManagement />} />
+                <Route path="/admin/songs" element={<SongManagement />} />
                 <Route path="*" element={<Navigate to="/admin/dashboard" />} />
               </Routes>
             </Layout.Content>

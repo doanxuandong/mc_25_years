@@ -24,7 +24,7 @@ export default function AdminSidebar({ onLogout }) {
       </div>
       <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']} style={{ background: '#1a2950' }}>
         <Menu.Item key="1" icon={<DashboardOutlined />} onClick={() => navigate('/admin/dashboard')}>Dashboard</Menu.Item>
-        <Menu.Item key="2" icon={<CustomerServiceOutlined />}>Song Management</Menu.Item>
+        <Menu.Item key="2" icon={<CustomerServiceOutlined />} onClick={() => navigate('/admin/songs')}>Song Management</Menu.Item>
         <Menu.Item key="3" icon={<UserOutlined />} onClick={() => navigate('/admin/users')}>User Management</Menu.Item>
         <Menu.Item key="4" icon={<BarChartOutlined />}>Vote Statistics</Menu.Item>
         <Menu.Item key="5" icon={<SettingOutlined />}>Program Settings</Menu.Item>
