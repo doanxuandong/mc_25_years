@@ -3,6 +3,7 @@ import SongCard from "./SongCard";
 import MusicModal from "./MusicModal";
 import LoginModal from "./LoginModal";
 import SavedVotesModal from "./SavedVotesModal";
+import { Input, Select } from "antd";
 
 export default function SongList({ setShowVoteLimit = () => {} }) {
   const [songs, setSongs] = useState([]);
@@ -12,6 +13,9 @@ export default function SongList({ setShowVoteLimit = () => {} }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showLogin, setShowLogin] = useState(false);
   const [autoNext, setAutoNext] = useState(false);
+  const [filterTitle, setFilterTitle] = useState("");
+  const [filterAuthor, setFilterAuthor] = useState("");
+  const [sortVotes, setSortVotes] = useState(""); // '', 'asc', 'desc'
 
   // Lấy user hiện tại
   const user = JSON.parse(localStorage.getItem('user'));
@@ -114,10 +118,50 @@ export default function SongList({ setShowVoteLimit = () => {} }) {
     }
   };
 
+  // Lọc và sort danh sách bài hát
+  const filteredSongs = (Array.isArray(songs) ? songs : [])
+    .filter(song =>
+      song.title.toLowerCase().includes(filterTitle.toLowerCase()) &&
+      song.author.toLowerCase().includes(filterAuthor.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortVotes === "asc") return (a.votes || 0) - (b.votes || 0);
+      if (sortVotes === "desc") return (b.votes || 0) - (a.votes || 0);
+      return 0;
+    });
+
   return (
     <>
+      <div className="max-w-6xl mx-auto px-2 pt-6 pb-2 flex flex-col sm:flex-row gap-2 sm:gap-4 items-center">
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 16 }}>
+          <Input
+            placeholder="Lọc theo tên bài hát..."
+            value={filterTitle}
+            onChange={e => setFilterTitle(e.target.value)}
+            style={{ width: 200 }}
+            allowClear
+          />
+          <Input
+            placeholder="Lọc theo tác giả..."
+            value={filterAuthor}
+            onChange={e => setFilterAuthor(e.target.value)}
+            style={{ width: 200 }}
+            allowClear
+          />
+          <Select
+            value={sortVotes}
+            onChange={setSortVotes}
+            style={{ width: 180 }}
+            allowClear
+            placeholder="Sắp xếp theo votes"
+          >
+            <Select.Option value="asc">Votes tăng dần</Select.Option>
+            <Select.Option value="desc">Votes giảm dần</Select.Option>
+          </Select>
+        </div>
+      </div>
       <div id="songlist" className="max-w-6xl mx-auto px-2 py-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {(Array.isArray(songs) ? songs : []).map((song, idx) => {
+        {filteredSongs.map((song, idx) => {
           const votedObj = votedSongs.find(v => v.id_song === song.id_song);
           return (
             <SongCard
