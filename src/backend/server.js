@@ -1,11 +1,12 @@
 import express from 'express';
 import cors from 'cors';
-import pkg from 'pg';
+import { Pool } from 'pg';
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-const { Pool } = require('pg');
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 app.use(cors());
@@ -17,9 +18,6 @@ const pool = new Pool({
     rejectUnauthorized: false,
   },
 });
-
-require('dotenv').config();
-
 
 // Đăng nhập
 app.post('/api/login', async (req, res) => {
@@ -326,4 +324,7 @@ app.get('/api/votes/per-day', async (req, res) => {
   `);
   res.json(result.rows);
 });
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
