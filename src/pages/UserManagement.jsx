@@ -107,35 +107,37 @@ export default function UserManagement() {
   };
 
   // xóa user
+  const handleDeleteUser = (user) => {
+    console.log('Đã bấm OK xác nhận xóa', user);
+    return fetch(`http://localhost:5000/api/users/${user.id}`, {
+      method: 'DELETE'
+    })
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to delete user');
+        fetchUsers();
+        Modal.success({
+          title: 'Xóa thành công!',
+          content: 'Người dùng đã được xóa khỏi hệ thống.'
+        });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        Modal.error({
+          title: 'Có lỗi xảy ra!',
+          content: error.message
+        });
+      });
+  };
+
   const handleDelete = (user) => {
-    
     Modal.confirm({
       title: 'Xác nhận xóa',
       content: `Bạn có chắc chắn muốn xóa người dùng "${user.full_name}"?`,
       okText: 'Xóa',
       okType: 'danger',
       cancelText: 'Hủy',
-      onOk: async () => {
-        console.log('Đã bấm OK xác nhận xóa', user);
-        try {
-          const response = await fetch(`http://localhost:5000/api/users/${user.id}`, {
-            method: 'DELETE'
-          });
-
-          if (!response.ok) throw new Error('Failed to delete user');
-
-          fetchUsers();
-          Modal.success({
-            title: 'Xóa thành công!',
-            content: 'Người dùng đã được xóa khỏi hệ thống.'
-          });
-        } catch (error) {
-          console.error('Error:', error);
-          Modal.error({
-            title: 'Có lỗi xảy ra!',
-            content: error.message
-          });
-        }
+      onOk() {
+        return handleDeleteUser(user);
       }
     });
     console.log('User to delete:', user);

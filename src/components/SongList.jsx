@@ -132,7 +132,7 @@ export default function SongList({ setShowVoteLimit = () => {} }) {
 
   return (
     <>
-      <div className="max-w-6xl mx-auto px-2 pt-6 pb-2 flex flex-col sm:flex-row gap-2 sm:gap-4 items-center">
+      <div className="max-w-6xl mx-auto px-2 pt-6 pb-2 hidden sm:flex flex-col sm:flex-row gap-2 sm:gap-4 items-center">
         <div style={{ width: '100%', display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 16 }}>
           <Input
             placeholder="Lọc theo tên bài hát..."
