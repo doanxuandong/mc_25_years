@@ -5,19 +5,21 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-const { Pool } = pkg;
+const { Pool } = require('pg');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const pool = new Pool({
-  user: 'postgres', 
-  host: 'localhost',
-  database: 'mc_25_years', 
-  password: 'xddtk8303@@',
-  port: 5432,
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
+
+require('dotenv').config();
+
 
 // Đăng nhập
 app.post('/api/login', async (req, res) => {
@@ -324,3 +326,4 @@ app.get('/api/votes/per-day', async (req, res) => {
   `);
   res.json(result.rows);
 });
+
