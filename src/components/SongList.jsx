@@ -5,6 +5,8 @@ import LoginModal from "./LoginModal";
 import SavedVotesModal from "./SavedVotesModal";
 import { Input, Select } from "antd";
 
+const API_BASE = process.env.REACT_APP_API_BASE;
+
 export default function SongList({ setShowVoteLimit = () => {} }) {
   const [songs, setSongs] = useState([]);
   const [votedSongs, setVotedSongs] = useState([]); // [{id, id_song, ...}]
@@ -22,7 +24,7 @@ export default function SongList({ setShowVoteLimit = () => {} }) {
 
   // Lấy danh sách bài hát
   useEffect(() => {
-    fetch("http://localhost:5000/api/songs")
+    fetch(`${API_BASE}/songs`)
       .then(res => res.json())
       .then(data => setSongs(data.data || []));
   }, []);
@@ -30,7 +32,7 @@ export default function SongList({ setShowVoteLimit = () => {} }) {
   // Lấy danh sách voted của user
   useEffect(() => {
     if (user) {
-      fetch(`http://localhost:5000/api/votes?user_id=${user.id}`)
+      fetch(`${API_BASE}/votes?user_id=${user.id}`)
         .then(res => res.json())
         .then(data => setVotedSongs(data));
     } else {
@@ -40,14 +42,14 @@ export default function SongList({ setShowVoteLimit = () => {} }) {
 
   const reloadVotes = () => {
     if (user) {
-      fetch(`http://localhost:5000/api/votes?user_id=${user.id}`)
+      fetch(`${API_BASE}/votes?user_id=${user.id}`)
         .then(res => res.json())
         .then(data => setVotedSongs(data));
     } else {
       setVotedSongs([]);
     }
     // Reload số vote bài hát
-    fetch("http://localhost:5000/api/songs")
+    fetch(`${API_BASE}/songs`)
       .then(res => res.json())
       .then(data => setSongs(data.data || []));
   };
@@ -89,7 +91,7 @@ export default function SongList({ setShowVoteLimit = () => {} }) {
       return;
     }
     // Gọi API vote
-    const res = await fetch('http://localhost:5000/api/votes', {
+    const res = await fetch(`${API_BASE}/votes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ user_id: user.id, song_id: song.id_song })
@@ -109,7 +111,7 @@ export default function SongList({ setShowVoteLimit = () => {} }) {
 
   // Hàm xử lý unvote
   const handleUnvote = async (voteId) => {
-    const res = await fetch(`http://localhost:5000/api/votes/${voteId}`, { method: 'DELETE' });
+    const res = await fetch(`${API_BASE}/votes/${voteId}`, { method: 'DELETE' });
     if (res.ok) {
       reloadVotes();
     } else {

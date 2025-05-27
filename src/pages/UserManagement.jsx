@@ -7,6 +7,8 @@ import 'antd/dist/reset.css'; // với antd v5
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
+const API_BASE = process.env.REACT_APP_API_BASE;
+
 export default function UserManagement() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -34,7 +36,7 @@ export default function UserManagement() {
         queryParams.append("endDate", filters.dateRange[1].toISOString());
       }
 
-      const res = await fetch(`http://localhost:5000/api/users?${queryParams}`);
+      const res = await fetch(`${API_BASE}/users?${queryParams}`);
       const users = await res.json();
       setData(users);
 
@@ -70,7 +72,7 @@ export default function UserManagement() {
     try {
       if (selectedUser) {
         // Sửa
-        const response = await fetch(`http://localhost:5000/api/users/${selectedUser.id}`, {
+        const response = await fetch(`${API_BASE}/users/${selectedUser.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(values)
@@ -80,7 +82,7 @@ export default function UserManagement() {
         
       } else {
         // Thêm user
-        const response = await fetch('http://localhost:5000/api/users', {
+        const response = await fetch(`${API_BASE}/users`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(values)
@@ -109,7 +111,7 @@ export default function UserManagement() {
   // xóa user
   const handleDeleteUser = (user) => {
     console.log('Đã bấm OK xác nhận xóa', user);
-    return fetch(`http://localhost:5000/api/users/${user.id}`, {
+    return fetch(`${API_BASE}/users/${user.id}`, {
       method: 'DELETE'
     })
       .then(response => {

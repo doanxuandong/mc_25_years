@@ -3,6 +3,8 @@ import { Button, Modal, Table, Input, Space, message, Image } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined, FilterOutlined, ReloadOutlined } from "@ant-design/icons";
 import SongFormModal from "../components/SongFormModal";
 
+const API_BASE = process.env.REACT_APP_API_BASE;
+
 export default function SongManagement() {
   const [songs, setSongs] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -14,7 +16,7 @@ export default function SongManagement() {
     const params = new URLSearchParams();
     if (filter.title) params.append('title', filter.title);
     if (filter.author) params.append('author', filter.author);
-    const res = await fetch(`http://localhost:5000/api/songs?${params}`);
+    const res = await fetch(`${API_BASE}/songs?${params}`);
     const result = await res.json();
     setSongs(result.data || result);
   };
@@ -24,8 +26,8 @@ export default function SongManagement() {
   const handleSubmit = async (values) => {
     const method = selectedSong ? "PUT" : "POST";
     const url = selectedSong
-      ? `http://localhost:5000/api/songs/${selectedSong.id_song}`
-      : "http://localhost:5000/api/songs";
+      ? `${API_BASE}/songs/${selectedSong.id_song}`
+      : `${API_BASE}/songs`;
     const res = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
@@ -50,7 +52,7 @@ export default function SongManagement() {
       okType: "danger",
       cancelText: "Hủy",
       onOk: async () => {
-        const res = await fetch(`http://localhost:5000/api/songs/${song.id_song}`, { method: "DELETE" });
+        const res = await fetch(`${API_BASE}/songs/${song.id_song}`, { method: "DELETE" });
         if (res.ok) {
           fetchSongs(filters);
           message.success("Đã xóa bài hát!");

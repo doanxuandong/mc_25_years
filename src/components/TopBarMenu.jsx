@@ -35,6 +35,8 @@ const mockTop10Songs = [
   { id: 10, title: "Sprinter", artist: "Dave & Central Cee", votes: 7500 },
 ];
 
+const API_BASE = process.env.REACT_APP_API_BASE;
+
 export default function TopBarMenu() {
   const [open, setOpen] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -58,7 +60,7 @@ export default function TopBarMenu() {
   // Lấy danh sách voted của user
   const fetchVotes = () => {
     if (user) {
-      fetch(`http://localhost:5000/api/votes?user_id=${user.id}`)
+      fetch(`${API_BASE}/votes?user_id=${user.id}`)
         .then(res => res.json())
         .then(data => setVotedSongs(data));
     } else {
@@ -70,7 +72,7 @@ export default function TopBarMenu() {
   }, [user, showSaved]);
 
   const handleRemoveVote = async (vote) => {
-    const res = await fetch(`http://localhost:5000/api/votes/${vote.id}`, { method: 'DELETE' });
+    const res = await fetch(`${API_BASE}/votes/${vote.id}`, { method: 'DELETE' });
     if (res.ok) {
       fetchVotes();
     } else {
@@ -100,7 +102,7 @@ export default function TopBarMenu() {
 
   useEffect(() => {
     // Lấy top 10 bài hát có votes cao nhất
-    fetch('http://localhost:5000/api/songs')
+    fetch(`${API_BASE}/songs`)
       .then(res => res.json())
       .then(data => {
         const sorted = (data.data || []).sort((a, b) => (b.votes || 0) - (a.votes || 0));

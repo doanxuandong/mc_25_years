@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Table, Input, Select, Space, Button } from 'antd';
 import { FilterOutlined, ReloadOutlined } from '@ant-design/icons';
 
+const API_BASE = process.env.REACT_APP_API_BASE;
+
 export default function VoteStatistics() {
   const [voteStats, setVoteStats] = useState([]);
   const [filteredStats, setFilteredStats] = useState([]);
@@ -12,7 +14,7 @@ export default function VoteStatistics() {
 
   const fetchStats = () => {
     setLoading(true);
-    fetch('http://localhost:5000/api/vote-stats')
+    fetch(`${API_BASE}/vote-stats`)
       .then(res => res.json())
       .then(data => {
         setVoteStats(data);

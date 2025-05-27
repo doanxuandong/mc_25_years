@@ -22,6 +22,8 @@ const data = [
   { id: 4, title: 'Open', author: 'Doé Xuan Dong', votes: '3.830', status: 'Open' },
 ];
 
+const API_BASE = process.env.REACT_APP_API_BASE;
+
 function getCountdownString(targetDate) {
   const now = new Date();
   const diff = targetDate - now;
@@ -45,7 +47,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     // Fetch total songs and total votes
-    fetch('http://localhost:5000/api/songs')
+    fetch(`${API_BASE}/songs`)
       .then(res => res.json())
       .then(data => {
         setTotalSongs(data.data ? data.data.length : 0);
@@ -60,7 +62,7 @@ export default function AdminDashboard() {
         setTop5Songs(top5);
       });
     // Fetch total users
-    fetch('http://localhost:5000/api/users')
+    fetch(`${API_BASE}/users`)
       .then(res => res.json())
       .then(users => {
         const loggedInUsers = users.filter(u => u.last_login);
@@ -70,7 +72,7 @@ export default function AdminDashboard() {
         setTodayLogins(filtered);
       });
     // Fetch votes per day
-    fetch('http://localhost:5000/api/votes/per-day')
+    fetch(`${API_BASE}/votes/per-day`)
       .then(res => res.json())
       .then(data => setVotesPerDay(data.map(row => ({ date: row.date, votes: Number(row.votes) }))));
     // Countdown

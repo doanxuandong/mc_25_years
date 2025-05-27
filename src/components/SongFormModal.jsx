@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, InputNumber, Upload, Button, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 
+const API_BASE = process.env.REACT_APP_API_BASE;
+
 export default function SongFormModal({ visible, onCancel, onSubmit, song }) {
   const [form] = Form.useForm();
   const [uploading, setUploading] = useState(false);
@@ -20,14 +22,14 @@ export default function SongFormModal({ visible, onCancel, onSubmit, song }) {
     formData.append("file", file);
     setUploading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/upload", {
+      const res = await fetch(`${API_BASE}/upload`, {
         method: "POST",
         body: formData,
       });
       const data = await res.json();
       if (data.url) {
         // Lưu URL thực sự trả về từ server
-        form.setFieldsValue({ [type]: "http://localhost:5000" + data.url });
+        form.setFieldsValue({ [type]: API_BASE + data.url.replace('/api', '') });
         message.success("Tải lên thành công!");
       } else {
         message.error("Tải lên thất bại!");
