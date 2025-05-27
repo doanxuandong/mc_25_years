@@ -1,11 +1,9 @@
-import express from 'express';
-import cors from 'cors';
-import { Pool } from 'pg';
-import multer from 'multer';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import dotenv from 'dotenv';
+const express = require('express');
+const cors = require('cors');
+const { Pool } = require('pg');
+const multer = require('multer');
+const path = require('path');
+const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
@@ -252,8 +250,6 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 });
 
 // lưu ở uploads
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 app.use('/uploads', express.static(path.join(__dirname, '/public/uploads')));
 
 // API: Lấy danh sách vote của user
