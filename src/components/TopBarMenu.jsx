@@ -35,7 +35,7 @@ const mockTop10Songs = [
   { id: 10, title: "Sprinter", artist: "Dave & Central Cee", votes: 7500 },
 ];
 
-const API_BASE = process.env.REACT_APP_API_BASE;
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 export default function TopBarMenu() {
   const [open, setOpen] = useState(false);

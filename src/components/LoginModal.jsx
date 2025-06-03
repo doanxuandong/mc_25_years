@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
-const API_BASE = process.env.REACT_APP_API_BASE;
+const API_BASE = import.meta.env.VITE_API_BASE;
+console.log('API_BASE:', API_BASE);
 
 export default function LoginModal({ open, onClose, onLogin }) {
   const [email, setEmail] = useState("");
@@ -17,7 +18,7 @@ export default function LoginModal({ open, onClose, onLogin }) {
     }
     setError("");
     try {
-      const res = await fetch(`${API_BASE}/login`, {
+      const res = await fetch(`${API_BASE}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),

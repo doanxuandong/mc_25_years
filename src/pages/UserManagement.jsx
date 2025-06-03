@@ -7,7 +7,7 @@ import 'antd/dist/reset.css'; // với antd v5
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-const API_BASE = process.env.REACT_APP_API_BASE;
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 export default function UserManagement() {
   const [data, setData] = useState([]);

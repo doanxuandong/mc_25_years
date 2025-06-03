@@ -3,7 +3,7 @@ import { Button, Modal, Table, Input, Space, message, Image } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined, EyeOutlined, FilterOutlined, ReloadOutlined } from "@ant-design/icons";
 import SongFormModal from "../components/SongFormModal";
 
-const API_BASE = process.env.REACT_APP_API_BASE;
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 export default function SongManagement() {
   const [songs, setSongs] = useState([]);

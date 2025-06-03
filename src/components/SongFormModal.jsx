@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, InputNumber, Upload, Button, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 
-const API_BASE = process.env.REACT_APP_API_BASE;
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 export default function SongFormModal({ visible, onCancel, onSubmit, song }) {
   const [form] = Form.useForm();

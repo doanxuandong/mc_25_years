@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Table, Input, Select, Space, Button } from 'antd';
 import { FilterOutlined, ReloadOutlined } from '@ant-design/icons';
 
-const API_BASE = process.env.REACT_APP_API_BASE;
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 export default function VoteStatistics() {
   const [voteStats, setVoteStats] = useState([]);

@@ -5,7 +5,7 @@ import LoginModal from "./LoginModal";
 import SavedVotesModal from "./SavedVotesModal";
 import { Input, Select } from "antd";
 
-const API_BASE = process.env.REACT_APP_API_BASE;
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 export default function SongList({ setShowVoteLimit = () => {} }) {
   const [songs, setSongs] = useState([]);

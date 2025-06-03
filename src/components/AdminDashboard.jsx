@@ -22,7 +22,7 @@ const data = [
   { id: 4, title: 'Open', author: 'Doé Xuan Dong', votes: '3.830', status: 'Open' },
 ];
 
-const API_BASE = process.env.REACT_APP_API_BASE;
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 function getCountdownString(targetDate) {
   const now = new Date();
